@@ -26,7 +26,7 @@ regle(X ?= Y, expand) :- var(X), compound(Y), \+occur_check(X,Y), !.
 
 regle(X ?= Y, check) :- var(X), occur_check(X, Y), (X \== Y), !.
 
-regle(X ?= Y, orient) :- var(Y), nonvar(X), !.
+regle(X ?= Y, orient) :- nonvar(X), var(Y), !.
 
 % A et B = nom de la fonction, M et N = ariétés
 regle(X ?= Y, decompose) :- compound(X), compound(Y), functor(X,A,M), functor(Y,B,N), (A == B), (M == N), !.
@@ -35,7 +35,7 @@ regle(X ?= Y, clash) :- compound(X), compound(Y), functor(X,A,M), functor(Y,B,N)
 
 % =================================================================================================
 % ========== Prédicat occur_check(V,T) : teste si la variable V apparaît dans le terme T.
-occur_check(V, T) :- \+cyclic_term(V), \+cyclic_term(T), contains_var(V, T).
+occur_check(V, T) :- contains_var(V, T).
 
 % =================================================================================================
 % == Prédicat reduit(R, E, P, Q) : Transforme le système d'équations P en Q en appliquant la règle R à l'équation E.
