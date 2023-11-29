@@ -1,17 +1,18 @@
-% Définition de l'opérateur ?=
+% =================================================================================================
+% ========================== Définition de l'opérateur ?=
 :- op(20,xfy,?=).
 
-% Prédicats d'affichage fournis
-
-% set_echo: ce prédicat active l'affichage par le prédicat echo
+% =================================================================================================
+% ============= set_echo: ce prédicat active l'affichage par le prédicat echo
 set_echo :- assert(echo_on).
 
-% clr_echo: ce prédicat inhibe l'affichage par le prédicat echo
+% =================================================================================================
+% ============= clr_echo: ce prédicat inhibe l'affichage par le prédicat echo
 clr_echo :- retractall(echo_on).
 
-% echo(T): si le flag echo_on est positionné, echo(T) affiche le terme T
-%          sinon, echo(T) réussit simplement en ne faisant rien.
-
+% =================================================================================================
+% ========== echo(T): si le flag echo_on est positionné, echo(T) affiche le terme T
+% =================== sinon, echo(T) réussit simplement en ne faisant rien.
 echo(T) :- echo_on, !, write(T).
 echo(_).
 
@@ -27,15 +28,18 @@ regle(X ?= Y, check) :- var(X), occur_check(X, Y), (X \== Y), !.
 
 regle(X ?= Y, orient) :- var(Y), nonvar(X), !.
 
-% A et B = nom de la fonction, M et N = ariétés 
+% A et B = nom de la fonction, M et N = ariétés
 regle(X ?= Y, decompose) :- compound(X), compound(Y), functor(X,A,M), functor(Y,B,N), (A == B), (M == N), !.
 
 regle(X ?= Y, clash) :- compound(X), compound(Y), functor(X,A,M), functor(Y,B,N), (A \== B ; M \== N), !.
 
 % =================================================================================================
 % ========== Prédicat occur_check(V,T) : teste si la variable V apparaît dans le terme T.
-% A voir pour peut-être faire autrement : y'a des pred qui vont peut etre pas
 occur_check(V, T) :- \+cyclic_term(V), \+cyclic_term(T), contains_var(V, T).
 
 % =================================================================================================
-% ========== Prédicat unifie(P) : unifie le système d'équations P où P est une liste d'équations.
+% == Prédicat reduit(R, E, P, Q) : Transforme le système d'équations P en Q en appliquant la règle R à l'équation E.
+reduit().
+
+% =================================================================================================
+% ====== Prédicat unifie(P) : unifie le système d'équations P où P est une liste d'équations.
