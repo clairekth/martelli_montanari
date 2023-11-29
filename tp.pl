@@ -18,9 +18,9 @@ echo(_).
 
 % =================================================================================================
 % ====== Prédicat regles(E,R) : définit la règle de transformation R qui s'applique à l'équation E.
-regle(X ?= Y, rename) :- var(X), var(Y), X == Y, !.
+regle(X ?= Y, rename) :- var(X), var(Y).
 
-regle(X ?= Y, simplify) :- var(X), atomic(Y), !.
+regle(X ?= Y, simplify) :- var(X), atomic(Y).
 
 regle(X ?= Y, expand) :- var(X), compound(Y), \+occur_check(X,Y), !.
 
@@ -39,7 +39,17 @@ occur_check(V, T) :- \+cyclic_term(V), \+cyclic_term(T), contains_var(V, T).
 
 % =================================================================================================
 % == Prédicat reduit(R, E, P, Q) : Transforme le système d'équations P en Q en appliquant la règle R à l'équation E.
-reduit().
+reduit(rename, X ?= Y, P, Q) :- regle(X ?= Y, rename), X = Y, select(X ?= Y, P, Q), !.
+
+reduit(simplify, X ?= Y, P, Q) :- regle(X ?= Y, simplify), X = Y, select(X ?= Y, P, Q), !.
+
+reduit(expand, X ?= Y, P, Q) :- regle(X ?= Y, expand), X = Y, select(X ?= Y, P, Q), !.
+
+reduit(check, X ?= Y, P, Q) :- \+regle(X ?= Y, check).
+
+reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), Y = X, select(X ?= Y, P, Q), !.
+
+reduit(decompose, X ?= Y, P, Q) :- regle(X ?= Y, decompose), 
 
 % =================================================================================================
 % ====== Prédicat unifie(P) : unifie le système d'équations P où P est une liste d'équations.
