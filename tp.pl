@@ -18,20 +18,20 @@ echo(_).
 
 % =================================================================================================
 % ====== Prédicat regles(E,R) : définit la règle de transformation R qui s'applique à l'équation E.
-regle(X ?= Y, rename) :- var(X), var(Y).
+regle(X ?= Y, rename) :- write("rename"), nl, var(X), var(Y).
 
-regle(X ?= Y, simplify) :- var(X), atomic(Y).
+regle(X ?= Y, simplify) :- write("s"), nl,var(X), atomic(Y) ; atomic(X), atomic(Y), X == Y.
 
-regle(X ?= Y, expand) :- var(X), compound(Y), \+occur_check(X,Y), !.
+regle(X ?= Y, expand) :- write("ex"), nl,var(X), compound(Y), \+occur_check(X,Y), !.
 
-regle(X ?= Y, check) :- var(X), occur_check(X, Y), (X \== Y), !.
+regle(X ?= Y, check) :- write("c"), nl,var(X), occur_check(X, Y), (X \== Y), !.
 
-regle(X ?= Y, orient) :- nonvar(X), var(Y), !.
+regle(X ?= Y, orient) :- write("o"), nl,nonvar(X), var(Y), !.
 
 % A et B = nom de la fonction, M et N = ariétés
-regle(X ?= Y, decompose) :- compound(X), compound(Y), functor(X,A,M), functor(Y,B,N), (A == B), (M == N), !.
+regle(X ?= Y, decompose) :- write("dec"),compound(X), compound(Y), functor(X,A,M), functor(Y,B,N), (A == B), (M == N), !.
 
-regle(X ?= Y, clash) :- compound(X), compound(Y), functor(X,A,M), functor(Y,B,N), (A \== B ; M \== N), !.
+regle(X ?= Y, clash) :- write("cl"), nl,compound(X), compound(Y), functor(X,A,M), functor(Y,B,N), (A \== B ; M \== N), !.
 
 % =================================================================================================
 % ========== Prédicat occur_check(V,T) : teste si la variable V apparaît dans le terme T.
@@ -39,15 +39,15 @@ occur_check(V, T) :- contains_var(V, T).
 
 % =================================================================================================
 % == Prédicat reduit(R, E, P, Q) : Transforme le système d'équations P en Q en appliquant la règle R à l'équation E.
-reduit(rename, X ?= Y, P, Q) :- regle(X ?= Y, rename), X = Y, append([X ?= Y], P, N), select(Y ?= Y, N, Q), !.
-
-reduit(simplify, X ?= Y, P, Q) :- regle(X ?= Y, simplify), X = Y, select(X ?= Y, P, Q), !.
+reduit(rename, X ?= Y, P, Q) :- regle(X ?= Y, rename), X = Y, Q = P, !.
+% reduit(rename, X ?= Y, P, Q) :- regle(X ?= Y, rename), X = Y, append([X ?= Y], P, N), select(Y ?= Y, N, Q), !.
+reduit(simplify, X ?= Y, P, Q) :- regle(X ?= Y, simplify), X = Y, Q = P, !.
 
 reduit(expand, X ?= Y, P, Q) :- regle(X ?= Y, expand), X = Y, select(X ?= Y, P, Q), !.
 
-reduit(check, X ?= Y, _, _) :- regle(X ?= Y, check), fail, !.
+reduit(check, X ?= Y, _, _) :- \+regle(X ?= Y, check).
 
-reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), select(X ?= Y, P, N), append([Y ?= X], N, Q), !.
+reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), Y = X, select(X ?= Y, P, Q), !.
 
 reduit(decompose, X ?= Y, P, Q) :- regle(X ?= Y, decompose), X =..[_|L1], Y =..[_|L2], decomposition(L1,L2,R),select(X ?= Y, P, N),append(R, N, Q).
 
@@ -59,3 +59,7 @@ decomposition([], [], R) :- R=[].
 
 % =================================================================================================
 % ====== Prédicat unifie(P) : unifie le système d'équations P où P est une liste d'équations.
+
+choix_premier(P, Q, E, R) :- reduit(R, E, P, Q), !.
+unifie([E|P]) :- choix_premier(P,Q,E,_), unifie(Q).
+unifie([]) :- write("SUCCES").
