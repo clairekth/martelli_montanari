@@ -47,7 +47,7 @@ reduit(expand, X ?= Y, P, Q) :- regle(X ?= Y, expand), X = Y, select(X ?= Y, P, 
 
 reduit(check, X ?= Y, _, _) :- regle(X ?= Y, check), fail, !.
 
-reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), select(X ?= Y, P, N), append([Y ?= X], N, Q),  !.
+reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), select(X ?= Y, P, N), append([Y ?= X], N, Q), !.
 
 reduit(decompose, X ?= Y, P, Q) :- regle(X ?= Y, decompose), X =..[_|L1], Y =..[_|L2], decomposition(L1,L2,R),select(X ?= Y, P, N),append(R, N, Q).
 
