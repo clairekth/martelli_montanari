@@ -54,9 +54,9 @@ reduit(check, X ?= Y, _, _) :- regle(X ?= Y, check), !.
 % reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), Y = X, select(X ?= Y, P, Q), !.
 reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), Q = [Y ?= X|P].
 
-reduit(decompose, X ?= Y, P, Q) :- regle(X ?= Y, decompose), arg(1, X, X1), arg(1, Y, Y1), append([X1 ?= Y1], P, Q).
+reduit(decompose, X ?= Y, P, Q) :- regle(X ?= Y, decompose), X =.. [A|B], Y =.. [A|C], decomposition(B, C, R), append(R, P, Q).
 
-reduit(clash, X ?= Y, _, _) :- \+regle(X ?= Y, clash).
+reduit(clash, X ?= Y, _, _) :- regle(X ?= Y, clash), !.
 
 decomposition([H1|T1], [H2|T2], R) :- decomposition(T1, T2, S), append([H1 ?= H2], S, R).
 decomposition([], [], R) :- R=[].
