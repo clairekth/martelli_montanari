@@ -45,11 +45,9 @@ reduit(simplify, X ?= Y, P, Q) :- regle(X ?= Y, simplify), X = Y, select(X ?= Y,
 
 reduit(expand, X ?= Y, P, Q) :- regle(X ?= Y, expand), X = Y, select(X ?= Y, P, Q), !.
 
-reduit(check, X ?= Y, P, Q) :- \+regle(X ?= Y, check).
+reduit(check, X ?= Y, _, _) :- regle(X ?= Y, check), fail, !.
 
 reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), Y = X, select(X ?= Y, P, Q), !.
-
-reduit(decompose, X ?= Y, P, Q) :- regle(X ?= Y, decompose), 
 
 % =================================================================================================
 % ====== Prédicat unifie(P) : unifie le système d'équations P où P est une liste d'équations.
