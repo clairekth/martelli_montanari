@@ -39,7 +39,7 @@ occur_check(V, T) :- contains_var(V, T).
 
 % =================================================================================================
 % == Prédicat reduit(R, E, P, Q) : Transforme le système d'équations P en Q en appliquant la règle R à l'équation E.
-reduit(rename, X ?= Y, P, Q) :- regle(X ?= Y, rename), X = Y, select(X ?= Y, P, Q), !.
+reduit(rename, X ?= Y, P, Q) :- regle(X ?= Y, rename), X = Y, append([X ?= Y], P, N), select(Y ?= Y, N, Q), !.
 
 reduit(simplify, X ?= Y, P, Q) :- regle(X ?= Y, simplify), X = Y, select(X ?= Y, P, Q), !.
 
