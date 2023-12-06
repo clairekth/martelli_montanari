@@ -39,20 +39,19 @@ occur_check(V, T) :- contains_var(V, T).
 
 % =================================================================================================
 % == Prédicat reduit(R, E, P, Q) : Transforme le système d'équations P en Q en appliquant la règle R à l'équation E.
-reduit(rename, X ?= Y, P, Q) :- regle(X ?= Y, rename),print_regle('rename :', X?=Y),  Q = P, X = Y.
+reduit(rename, X ?= Y, P, Q) :-  X = Y, Q = P.
 
-reduit(simplify, X ?= Y, P, Q) :- regle(X ?= Y, simplify), print_regle('simplify :', X?=Y),  Q = P, X = Y.
+reduit(simplify, X ?= Y, P, Q) :-  X = Y, Q = P.
 
-reduit(expand, X ?= Y, P, Q) :- regle(X ?= Y, expand), print_regle('expand :', X?=Y),  Q = P,X = Y.
+reduit(expand, X ?= Y, P, Q) :-  X = Y, Q = P.
 
-reduit(check, X ?= Y, _, _) :- regle(X ?= Y, check), print_regle('clash :', X?=Y), fail.
+reduit(check, _, _, _) :-  fail.
 
-% reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), Y = X, select(X ?= Y, P, Q), !.
-reduit(orient, X ?= Y, P, Q) :- regle(X ?= Y, orient), print_regle('orient :', X?=Y), Q = [Y ?= X|P].
+reduit(orient, X ?= Y, P, Q) :- Q = [Y ?= X|P].
 
-reduit(decompose, X ?= Y, P, Q) :- regle(X ?= Y, decompose), print_regle('decompose :', X?=Y), X =.. [A|B], Y =.. [A|C], decomposition(B, C, R), append(R, P, Q).
+reduit(decompose, X ?= Y, P, Q) :- X =.. [_|L1], Y =.. [_|L2], decomposition(L1, L2, R), append(R, P, Q).
 
-reduit(clash, X ?= Y, _, _) :- regle(X ?= Y, clash), print_regle('clash :', X?=Y), fail.
+reduit(clash,_, _, _) :- fail.
 
 decomposition([H1|T1], [H2|T2], R) :- decomposition(T1, T2, S), append([H1 ?= H2], S, R).
 decomposition([], [], R) :- R=[].
@@ -60,10 +59,13 @@ decomposition([], [], R) :- R=[].
 
 % =================================================================================================
 % ====== Prédicat unifie(P) : unifie le système d'équations P où P est une liste d'équations.
-unifie([H|T]) :- print_system([H|T]), choix_premier(_, H, T, Q), unifie(Q),!.
-unifie([]) :- nl, write("SUCCESS").
+unifie([H|T], choix_premier) :- print_system([H|T]), choix_premier(_, H, T, Q), unifie(Q, choix_premier),!.
+unifie([], _) :- write("Unification réussie ! Voici le résultat : "), nl.
 
-choix_premier(R, E, P, Q) :- reduit(R, E, P, Q), !.
+choix_premier(R, E, P, Q) :- regle(E, R),print_regle(R,E), reduit(R, E, P, Q).
 
-print_system(P) :- set_echo, echo('system : '), echo(P), echo('\n').
+print_system(P) :- echo('system : '), echo(P), echo('\n').
 print_regle(R,E) :- echo(R), echo(E), echo('\n').  
+
+unif(P,C) :- clr_echo, unifie(P,C).
+trace_unif(P,C) :- set_echo, echo('Stratégie : '), echo(C), nl, nl, unifie(P,C).
