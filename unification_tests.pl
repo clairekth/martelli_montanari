@@ -1,6 +1,7 @@
 :- [martelli_montanari].
 :- op(20,xfy,?=).
 :- style_check(-singleton).
+
 test_1(C) :- unif([ a?=a], C).
 test_2(C) :- unif([ a?=b], C).
 test_3(C) :- unif([ X?=a], C), format('X = ~w', [X]).
@@ -33,7 +34,10 @@ run_tests(C):-
 main :-
     write('------- Choix premier : ---------\n'),
     run_tests(choix_premier),
-    write('---------------------------------\n'),
+    write('------- Choix pondere 1 : ---------\n'),
+    run_tests(choix_pondere_1),
+    write('------- Choix pondere 2 : ---------\n'),
+    run_tests(choix_pondere_2),
     halt.
 :- initialization(main).
 
