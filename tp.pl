@@ -17,6 +17,14 @@ echo(T) :- echo_on, !, write(T).
 echo(_).
 
 % =================================================================================================
+% ====== Prédicat print_system(P) : affiche le système d'équations P.
+print_system(P) :- set_echo, echo('system : '), echo(P), echo('\n').
+
+% =================================================================================================
+% ====== Prédicat print_regle(R,E) : affiche la règle R qui s'applique à l'équation E.
+print_regle(R,E) :- echo(R), echo(E), echo('\n').
+
+% =================================================================================================
 % ====== Prédicat regles(E,R) : définit la règle de transformation R qui s'applique à l'équation E.
 regle(X ?= Y, rename) :- var(X), var(Y).
 
@@ -54,6 +62,8 @@ reduit(decompose, X ?= Y, P, Q) :- regle(X ?= Y, decompose), print_regle('decomp
 
 reduit(clash, X ?= Y, _, _) :- regle(X ?= Y, clash), print_regle('clash :', X?=Y), fail.
 
+% =================================================================================================
+% ====== Prédicat decomposition(T1, T2, R) : décompose les termes T1 et T2 en une liste d'équations R.
 decomposition([H1|T1], [H2|T2], R) :- decomposition(T1, T2, S), append([H1 ?= H2], S, R).
 decomposition([], [], R) :- R=[].
 
@@ -63,7 +73,11 @@ decomposition([], [], R) :- R=[].
 unifie([H|T]) :- print_system([H|T]), choix_premier(_, H, T, Q), unifie(Q),!.
 unifie([]) :- nl, write("SUCCESS").
 
+% =================================================================================================
+% ====== Prédicat choix_premier(R, E, P, Q) : choisit la règle R à appliquer à E dans P
+% ====== pour obtenir le système d'équations Q.
 choix_premier(R, E, P, Q) :- reduit(R, E, P, Q), !.
 
-print_system(P) :- set_echo, echo('system : '), echo(P), echo('\n').
-print_regle(R,E) :- echo(R), echo(E), echo('\n').  
+% =================================================================================================
+% ====== Prédicat choix_pondere(R, E, P, Q) : choisit la règle R à appliquer à E dans P
+% ====== pour obtenir le système d'équations Q.
