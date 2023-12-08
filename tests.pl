@@ -1,4 +1,4 @@
-:- [tp].
+:- [martelli_montanari].
 :- op(20,xfy,?=).
 
 test_rename_true :- regle(X ?= Y, rename).
