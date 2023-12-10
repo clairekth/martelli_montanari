@@ -90,7 +90,7 @@ unifie(P, choix_pondere_2) :-
     unifie(Q, choix_pondere_2), !.
 
 unifie([], _) :-
-    write("Unification réussie ! Voici le résultat : "), nl.
+    write('Unification réussie !'), nl.
 
 % =================================================================================================
 % ====== Prédicat choix_premier(P, Q, E, R) : choisit la première règle R qui s'applique à l'équation E du système P.
@@ -129,9 +129,20 @@ trace_unif(P) :- trace_unif(P, choix_premier).
 trace_unif(P, C) :-
     set_echo, echo('Stratégie : '), echo(C), nl, nl, unifie(P, C).
 
-trace_temps(P, C) :- statistics(cputime, T0), unif(P, C), statistics(cputime, T1), T is T1 - T0, format('CPU time: ~w~n', [T]).
-
 main :-
-    write('Entrez votre système d\'équations : '), read(P),
-    write('Entrez votre stratégie : '), read(C),
-    trace_unif(P, C).
+	repeat,
+    write('Entrez votre système d\'équations'),
+	nl,
+	write('ex: [A ?= x, f(x) ?= f(A)]'), nl, read(P),
+    write('Entrez votre stratégie (0/1/2)'),
+	nl,
+	write('0 -> \'choix_premier\''), nl,
+	write('1 -> \'choix_pondere_1\''), nl,
+	write('2 -> \'choix_pondere_2\''), nl,
+	read(CI),
+	(CI == 0 -> C = choix_premier ; CI == 1 -> C = choix_pondere_1 ; C = choix_pondere_2),
+	write('Voulez-vous activer le mode trace ? (y/n) >> '), read(T),
+	(T == y ; T == n),
+	(T == y -> trace_unif(P, C) ; unif(P, C)),
+	write('Voulez-vous recommencer ? (y/n) : '), read(R),
+	(R == n), !.
