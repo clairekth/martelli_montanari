@@ -124,10 +124,10 @@ print_system(P) :- echo('system : '), echo(P), echo('\n').
 print_regle(R, E) :- echo(R),echo(' : '), echo(E), echo('\n').
 
 unif(P) :- unif(P, choix_premier).
-unif(P, C) :- clr_echo, unifie(P, C).
+unif(P, S) :- clr_echo, unifie(P, S).
 trace_unif(P) :- trace_unif(P, choix_premier).
-trace_unif(P, C) :-
-    set_echo, echo('Stratégie : '), echo(C), nl, nl, unifie(P, C).
+trace_unif(P, S) :-
+    set_echo, echo('Stratégie : '), echo(S), nl, nl, unifie(P, S).
 
 main :-
 	repeat,
