@@ -133,16 +133,28 @@ main :-
 	repeat,
     write('Entrez votre système d\'équations'),
 	nl,
-	write('ex: [A ?= x, f(x) ?= f(A)]'), nl, read(P),
-    write('Entrez votre stratégie (0/1/2)'),
+	write('ex: [A ?= x, f(x) ?= f(A)].'), nl, read(P),
+    write('Entrez votre stratégie (0./1./2.)'),
 	nl,
 	write('0 -> \'choix_premier\''), nl,
 	write('1 -> \'choix_pondere_1\''), nl,
 	write('2 -> \'choix_pondere_2\''), nl,
 	read(CI),
 	(CI == 0 -> C = choix_premier ; CI == 1 -> C = choix_pondere_1 ; C = choix_pondere_2),
-	write('Voulez-vous activer le mode trace ? (y/n) >> '), read(T),
+	write('Voulez-vous activer le mode trace ? (y./n.) >> '), read(T),
 	(T == y ; T == n),
-	(T == y -> trace_unif(P, C) ; unif(P, C)),
-	write('Voulez-vous recommencer ? (y/n) : '), read(R),
+	(T == y -> trace_unif(P, C) ; unif(P, C)),nl,
+	nl,write('Voulez-vous recommencer ? (y./n.) : '), read(R),
 	(R == n), !.
+
+explication :- 
+    write('Le prédicat main permet de lancer le programme avec un guidage complet.'), nl, nl,
+    write('3 stratégies C ont été mise en place : \n'), nl,
+    write('      - choix_premier'), nl,
+    write('      - choix_pondere_1 : clash, check,rename, simplify, orient, decompose'), nl,
+    write('      - choix_pondere_2 : decompose, expand, orient, simplify, rename, check, clash'), nl,nl,
+    write('2 prédicats ont été mise en place pour l\'unification : unif(E,C) qui n\'affiche pas les traces et unif_trace(E,C) qui affiche les traces.'), nl,
+    write('Il vous suffit donc d\'appeler le prédicat unif([votre equation], votre stratégie) ou trace_unif([votre equation], votre stratégie)'), nl,
+    write('Exemple : trace_unif([A ?= x, f(x) ?= f(A)], choix_pondere_1).'), nl, nl.
+
+:- explication.
