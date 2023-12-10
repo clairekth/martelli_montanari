@@ -131,3 +131,7 @@ trace_unif(P, C) :-
 
 trace_temps(P, C) :- statistics(cputime, T0), unif(P, C), statistics(cputime, T1), T is T1 - T0, format('CPU time: ~w~n', [T]).
 
+main :-
+    write('Entrez votre système d\'équations : '), read(P),
+    write('Entrez votre stratégie : '), read(C),
+    trace_unif(P, C).
