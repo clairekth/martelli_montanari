@@ -100,7 +100,7 @@ choix_premier(P, Q, E, R) :-
 choix_pondere_1(P, Q, _, _) :-
     choix_equation(P, [clash, check, rename, simplify, orient, decompose, expand], E, R),
     print_regle(R, E),
-    select(E, P, N),
+    select(E, P, N), % select permet de supprimer E de P et de mettre le résultat dans N
     reduit(R, E, N, Q).
 
 choix_pondere_2(P, Q, _, _) :-
